@@ -1,23 +1,45 @@
-export default (options = {}) => ({
-    config : (config = false) => {
-        // Modify state machine config.
-        // Utilize configEditor when possible.
+import { assign } from "xstate";
+import { util } from "state-machine-snacks";
+import encode from "src/utils/url/encode.js";
+import decode from "src/utils/url/decode.js";
+import { hash, updateUrl } from "src/utils/url/url.js";
 
-        // Must return object to be new config.
-    },
+const {
+    configEditor,
+} = util;
 
-    service : (config = false, service = false) => {
-        // Access the service as well as the config used to generate the service.
+export default () => ({
+    config : (config) => {
+        let result = { ...config };
 
-        // Doesn't need to return anything.
+        // Add an update event used to update context.
+        result = configEditor.addEventListener(result, {
+            "plugin:url-context:DECODE" : {
+                actions : [
+                    assign({ urlState : { decoded : () => decode(hash) } }),
+                ],
+            },
+        });
+
+        result = configEditor.addEventListener(result, {
+            "plugin:url-context:UPDATE" : {
+                actions : [
+                    assign({
+                        urlState : {
+                            encoded : (_, { data }) => {
+                                const encoded = encode(data);
+
+                                updateUrl(encoded);
+                                
+                                return encoded;
+                            },
+                        },
+                    }),
+                    assign({ urlState : { decoded  : (_, { data }) => data } }),
+                ],
+            },
+        });
+
+        return result;
     },
 });
-
-// You can export helper functions for the users of your plugin.
-const exampleHelper = () => {
-
-};
-
-export {
-    exampleHelper,
-};
