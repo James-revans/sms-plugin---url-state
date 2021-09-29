@@ -1,8 +1,8 @@
 import { assign } from "xstate";
 import { util } from "state-machine-snacks";
-import encode from "src/utils/url/encode.js";
-import decode from "src/utils/url/decode.js";
-import { hash, updateUrl } from "src/utils/url/url.js";
+import encode from "src/utils/encode.js";
+import decode from "src/utils/decode.js";
+import { hash, updateUrl } from "src/utils/url.js";
 
 const {
     configEditor,
@@ -16,7 +16,7 @@ export default () => ({
         result = configEditor.addEventListener(result, {
             "plugin:url-context:DECODE" : {
                 actions : [
-                    assign({ urlState : { decoded : () => decode(hash) } }),
+                    assign({ decoded : () => decode(hash)  }),
                 ],
             },
         });
@@ -25,17 +25,16 @@ export default () => ({
             "plugin:url-context:UPDATE" : {
                 actions : [
                     assign({
-                        urlState : {
-                            encoded : (_, { data }) => {
-                                const encoded = encode(data);
+                        encoded : (_, { data }) => {
+                            const encoded = encode(data);
 
-                                updateUrl(encoded);
-                                
-                                return encoded;
-                            },
+                            updateUrl(encoded);
+                                    
+                            return encoded;
                         },
+                        decoded  : (_, { data }) => data,
                     }),
-                    assign({ urlState : { decoded  : (_, { data }) => data } }),
+                    
                 ],
             },
         });

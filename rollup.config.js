@@ -1,6 +1,8 @@
 import commonjs from "@rollup/plugin-commonjs";
 import resolve from "@rollup/plugin-node-resolve";
 import { terser } from "rollup-plugin-terser";
+import alias from "@rollup/plugin-alias";
+import path from "path";
 
 const pkg = require("./package.json");
 
@@ -13,6 +15,11 @@ export default {
         }),
         commonjs(),
         terser(),
+        alias({
+            entries : [
+                { find : "src", replacement : path.resolve(__dirname, "./src") },
+            ],
+        }),
     ],
 
     output : [
@@ -26,4 +33,4 @@ export default {
             name   : pkg.nam,
         },
     ],
-}
+};

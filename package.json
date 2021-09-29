@@ -1,6 +1,6 @@
 {
   "name": "sms-plugin---url-state",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "State Machine Snack plugin for url state",
   "main": "./dist/lib/index.js",
   "module": "./dist/lib/index.mjs",
@@ -32,7 +32,9 @@
   },
   "homepage": "https://github.com/James-revans/sms-plugin---url-state",
   "dependencies": {
+    "@rollup/plugin-alias": "^3.1.5",
     "lz-string": "^1.4.4",
+    "path": "^0.12.7",
     "xstate": "^4.25.0"
   }
 }
